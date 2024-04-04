@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import { UiLayout } from './ui/ui-layout';
+import AppResponseFeature from './ui/app-response-feature';
 
 const AccountListFeature = lazy(() => import('./account/account-list-feature'));
 const AccountDetailFeature = lazy(
@@ -23,6 +24,7 @@ const routes: RouteObject[] = [
   { path: '/account/:address', element: <AccountDetailFeature /> },
   { path: '/clusters', element: <ClusterFeature /> },
   { path: 'mons-dot-rehab/*', element: <MonsDotRehabFeature /> },
+  { path: '/app-response', element: <AppResponseFeature /> },
 ];
 
 export function AppRoutes() {
