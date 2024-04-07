@@ -10,7 +10,7 @@ export function MonsDotRehabCreate() {
       onClick={() => greet.mutateAsync(Keypair.generate())}
       disabled={greet.isPending}
     >
-      Run program{greet.isPending && '...'}
+      run{greet.isPending && '...'}
     </button>
   );
 }
@@ -23,10 +23,9 @@ export function MonsDotRehabProgram() {
   }
   if (!getProgramAccount.data?.value) {
     return (
-      <div className="alert alert-info flex justify-center">
+      <div className="alert alert-warning flex justify-center">
         <span>
-          Program account not found. Make sure you have deployed the program and
-          are on the correct cluster.
+          program account not found
         </span>
       </div>
     );

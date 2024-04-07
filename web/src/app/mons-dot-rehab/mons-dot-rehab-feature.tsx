@@ -12,8 +12,8 @@ export default function MonsDotRehabFeature() {
   return publicKey ? (
     <div>
       <AppHero
-        title="MonsDotRehab"
-        subtitle={'Run the program by clicking the "Run program" button.'}
+        title="mons program"
+        subtitle={'testing'}
       >
         <p className="mb-6">
           <ExplorerLink
