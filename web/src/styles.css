@@ -12,12 +12,21 @@ body,
   @apply bg-base-100;
 }
 .wallet-adapter-button-trigger {
-  background: #31df77 !important;
+  background: #F5F5F5 !important;
+  color: rgb(42, 42, 42) !important; /* Added line for making button title black */
   border-radius: 8px !important;
   padding-left: 16px !important;
   padding-right: 16px !important;
 }
-.wallet-adapter-dropdown-list,
+.wallet-adapter-dropdown-list {
+  background: #F5F5F5 !important;
+  color: rgb(42, 42, 42) !important;
+  box-shadow: none !important;
+}
+.wallet-adapter-dropdown-list-item {
+  background: #F5F5F5 !important;
+  color: rgb(42, 42, 42) !important;
+}
 .wallet-adapter-button {
   font-family: inherit !important;
 }.active {
