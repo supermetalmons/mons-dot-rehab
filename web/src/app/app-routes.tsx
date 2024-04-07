@@ -33,6 +33,7 @@ export function AppRoutes() {
     <UiLayout links={links}>
       {useRoutes([
         { index: true, element: <DashboardFeature /> },
+        { path: '/app-request', element: <DashboardFeature /> },
         { path: '/', element: <DashboardFeature /> },
         ...routes(query),
         { path: '*', element: <Navigate to={'/${query}'} replace={true} /> },
