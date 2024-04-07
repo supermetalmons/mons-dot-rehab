@@ -24,3 +24,8 @@ body,
   background-color: black !important;
   color: white !important;
 }
+
+.btn-outline:hover {
+  background-color: #f3f4f6; /* Light grey background */
+  color: #111827; /* Dark text */
+}
