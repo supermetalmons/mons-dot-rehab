@@ -6,7 +6,13 @@ import { WalletButton } from '../solana/solana-provider';
 
 export default function DashboardFeature() {
   const location = useLocation();
-  const fullQuery = location.search;
+  const queryString = location.search.substring(1);
+  const queryPairs = queryString.split("&").reduce<Record<string, string>>((acc, pair) => {
+    const [key, value] = pair.split("=");
+    acc[key] = decodeURIComponent(value || "");
+    return acc;
+  }, {});
+
   const { publicKey } = useWallet();
 
   const [pageTitle, setPageTitle] = useState("mons");
@@ -32,7 +38,12 @@ export default function DashboardFeature() {
     <div style={{backgroundColor: heroBgColor}}>
       <AppHero title={pageTitle} subtitle={subtitle}>
         <button className="btn btn-primary" onClick={handleRedirect}>{redirectCount === 0 ? "new match" : "get mons app"}</button>
-        <p><br />{fullQuery}</p>
+        <div>
+        <p><br /><br /></p>
+          {Object.entries(queryPairs).map(([key, value]) => (
+            <p key={key}>{`${key} ~ ${value}`}<br /><br /></p>
+          ))}
+        </div>
       </AppHero>
     </div>
   ) : (
