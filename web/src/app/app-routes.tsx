@@ -16,7 +16,6 @@ const MonsDotRehabFeature = lazy(
 const links: { label: string; path: string }[] = [
   { label: 'program', path: '/mons-dot-rehab' },
   { label: 'account', path: '/account' },
-  { label: 'clusters', path: '/clusters' },
 ];
 
 const routes: RouteObject[] = [
