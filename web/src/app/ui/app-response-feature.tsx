@@ -6,8 +6,8 @@ export default function AppResponseFeature() {
 
   return (
     <div>
-      <h1>App Response</h1>
-      <p>Full URL Query: {fullQuery}</p>
+      <h1>app response</h1>
+      <p>query: {fullQuery}</p>
     </div>
   );
 }
