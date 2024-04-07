@@ -1,5 +1,5 @@
-import { lazy, ReactElement } from 'react';
-import { Navigate, RouteObject, useRoutes, useLocation } from 'react-router-dom';
+import { lazy } from 'react';
+import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import { UiLayout } from './ui/ui-layout';
 import AppResponseFeature from './ui/app-response-feature';
 
@@ -19,25 +19,22 @@ const links: { label: string; path: string }[] = [
   { label: 'clusters', path: '/clusters' },
 ];
 
-const routes: (query: string) => RouteObject[] = (query) => [
+const routes: RouteObject[] = [
   { path: '/account/', element: <AccountListFeature /> },
   { path: '/account/:address', element: <AccountDetailFeature /> },
   { path: '/clusters', element: <ClusterFeature /> },
   { path: 'mons-dot-rehab/*', element: <MonsDotRehabFeature /> },
-  { path: '/app-response', element: <Navigate to={`/dashboard${query}`} replace={true} /> },
+  { path: '/app-response', element: <AppResponseFeature /> },
 ];
 
 export function AppRoutes() {
-  const location = useLocation();
-  const query = location.search;
-
   return (
     <UiLayout links={links}>
       {useRoutes([
-        { index: true, element: <Navigate to={`/dashboard${query}`} replace={true} /> },
+        { index: true, element: <Navigate to={'/dashboard'} replace={true} /> },
         { path: '/dashboard', element: <DashboardFeature /> },
-        ...routes(query),
-        { path: '*', element: <Navigate to={`/dashboard${query}`} replace={true} /> },
+        ...routes,
+        { path: '*', element: <Navigate to={'/dashboard'} replace={true} /> },
       ])}
     </UiLayout>
   );
