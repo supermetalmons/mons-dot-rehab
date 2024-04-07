@@ -30,10 +30,10 @@ export function AppRoutes() {
   return (
     <UiLayout links={links}>
       {useRoutes([
-        { index: true, element: <Navigate to={'/dashboard'} replace={true} /> },
-        { path: '/dashboard', element: <DashboardFeature /> },
+        { index: true, element: <DashboardFeature /> },
+        { path: '/', element: <DashboardFeature /> },
         ...routes,
-        { path: '*', element: <Navigate to={'/dashboard'} replace={true} /> },
+        { path: '*', element: <Navigate to={'/'} replace={true} /> },
       ])}
     </UiLayout>
   );
