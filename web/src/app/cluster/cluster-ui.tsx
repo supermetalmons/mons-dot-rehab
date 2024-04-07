@@ -186,7 +186,7 @@ export function ClusterUiTable() {
               <td className="space-x-2 whitespace-nowrap text-center">
                 <button
                   disabled={item?.active}
-                  className="btn btn-xs btn-default btn-outline"
+                  className="btn btn-xs btn-default"
                   onClick={() => {
                     if (!window.confirm('Are you sure?')) return;
                     deleteCluster(item);

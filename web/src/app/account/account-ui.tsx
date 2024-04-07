@@ -91,20 +91,20 @@ export function AccountButtons({ address }: { address: PublicKey }) {
       <div className="space-x-2">
         <button
           disabled={cluster.network?.includes('mainnet')}
-          className="btn btn-xs lg:btn-md btn-outline"
+          className="btn btn-xs lg:btn-md"
           onClick={() => setShowAirdropModal(true)}
         >
           Airdrop
         </button>
         <button
           disabled={wallet.publicKey?.toString() !== address.toString()}
-          className="btn btn-xs lg:btn-md btn-outline"
+          className="btn btn-xs lg:btn-md"
           onClick={() => setShowSendModal(true)}
         >
           Send
         </button>
         <button
-          className="btn btn-xs lg:btn-md btn-outline"
+          className="btn btn-xs lg:btn-md"
           onClick={() => setShowReceiveModal(true)}
         >
           Receive
@@ -133,7 +133,7 @@ export function AccountTokens({ address }: { address: PublicKey }) {
               <span className="loading loading-spinner"></span>
             ) : (
               <button
-                className="btn btn-sm btn-outline"
+                className="btn btn-sm"
                 onClick={async () => {
                   await query.refetch();
                   await client.invalidateQueries({
@@ -235,7 +235,7 @@ export function AccountTransactions({ address }: { address: PublicKey }) {
             <span className="loading loading-spinner"></span>
           ) : (
             <button
-              className="btn btn-sm btn-outline"
+              className="btn btn-sm"
               onClick={() => query.refetch()}
             >
               <IconRefresh size={16} />
@@ -298,7 +298,7 @@ export function AccountTransactions({ address }: { address: PublicKey }) {
                   <tr>
                     <td colSpan={4} className="text-center">
                       <button
-                        className="btn btn-xs btn-outline"
+                        className="btn btn-xs"
                         onClick={() => setShowAll(!showAll)}
                       >
                         {showAll ? 'Show Less' : 'Show All'}
