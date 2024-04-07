@@ -28,8 +28,8 @@ export function UiLayout({
           <Link className="btn btn-ghost normal-case text-xl" to="/">
             <img
               className="h-4 md:h-6"
-              alt="Solana Logo"
-              src="/assets/solana-logo.png"
+              alt="mons rock"
+              src="/assets/mons-rock.png"
             />
           </Link>
           <ul className="menu menu-horizontal px-1 space-x-2">
