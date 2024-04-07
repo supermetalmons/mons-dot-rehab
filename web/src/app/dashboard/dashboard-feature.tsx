@@ -9,7 +9,9 @@ export default function DashboardFeature() {
   const queryString = location.search.substring(1);
   const queryPairs = queryString.split("&").reduce<Record<string, string>>((acc, pair) => {
     const [key, value] = pair.split("=");
-    acc[key] = decodeURIComponent(value || "");
+    if (key && value) {
+      acc[key] = decodeURIComponent(value);
+    }
     return acc;
   }, {});
 
