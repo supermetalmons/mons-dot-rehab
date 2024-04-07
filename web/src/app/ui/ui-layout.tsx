@@ -23,7 +23,7 @@ export function UiLayout({
 
   return (
     <div className="h-full flex flex-col">
-        <div className="navbar bg-base-300 dark:bg-gray-800 text-gray-800 dark:text-gray-200 flex-col md:flex-row space-y-2 md:space-y-0">
+        <div className="navbar bg-base-300 text-gray-800 flex-col md:flex-row space-y-2 md:space-y-0">
         <div className="flex-1">
           <Link className="btn btn-ghost normal-case text-xl" to="/">
             <img
@@ -65,12 +65,12 @@ export function UiLayout({
         </Suspense>
         <Toaster position="bottom-right" />
       </div>
-      <footer className="footer footer-center p-4 bg-base-300 text-base-content">
+      <footer className="footer footer-center p-4 bg-base-300 text-gray-800 text-base-content">
         <aside>
           <p>
             follow{' '}
             <a
-              className="link hover:text-white"
+              className="link hover:text-blue-500"
               href="https://twitter.com/supermetalx"
               target="_blank"
               rel="noopener noreferrer"

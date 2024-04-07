@@ -9,9 +9,10 @@ html,
 body,
 #root {
   height: 100%;
+  @apply bg-base-100;
 }
 .wallet-adapter-button-trigger {
-  background: rgb(56, 107, 188) !important;
+  background: #31df77 !important;
   border-radius: 8px !important;
   padding-left: 16px !important;
   padding-right: 16px !important;
@@ -19,4 +20,7 @@ body,
 .wallet-adapter-dropdown-list,
 .wallet-adapter-button {
   font-family: inherit !important;
+}.active {
+  background-color: black !important;
+  color: white !important;
 }
