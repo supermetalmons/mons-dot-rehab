@@ -1,7 +1,6 @@
 import { lazy, ReactElement } from 'react';
 import { Navigate, RouteObject, useRoutes, useLocation } from 'react-router-dom';
 import { UiLayout } from './ui/ui-layout';
-import AppResponseFeature from './ui/app-response-feature';
 
 const AccountListFeature = lazy(() => import('./account/account-list-feature'));
 const AccountDetailFeature = lazy(
