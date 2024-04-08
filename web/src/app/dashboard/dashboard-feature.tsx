@@ -59,9 +59,15 @@ export default function DashboardFeature() {
         }
         break;
       case "acceptSecretInvite":
-        setPageTitle("join onchain match");
-        setSubtitle("🪙");
-        setButtonTitle("0.042 sol");
+        if (!queryPairs["guestId"]) {
+          setPageTitle("play mons");
+          setSubtitle("🥱");
+          setButtonTitle("join");
+        } else {
+          setPageTitle("join onchain match");
+          setSubtitle("🪙");
+          setButtonTitle("0.042 sol");
+        }
         break;
       case "getSecretGameResult":
         if (didSendFinalTx) {
@@ -111,7 +117,7 @@ export default function DashboardFeature() {
         window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
         setWentToPlay(true);
       } else if (isWaitingForInviteToBeShared) {
-        const customUrl = `https://mons.link/invite?code=${encodeURIComponent('your-invite-code')}`; // TODO: correct url to share
+        const customUrl = `https://mons.rehab/open-in-browser?id=${encodeURIComponent(queryPairs["id"])}&password=${encodeURIComponent(queryPairs["password"])}&hostId=${encodeURIComponent(queryPairs["hostId"])}&hostColor=${encodeURIComponent(queryPairs["hostColor"])}&type=acceptSecretInvite`;
         navigator.clipboard.writeText(customUrl);
         if (!isWaitingForSomeoneToJoin) {
           setIsWaitingForSomeoneToJoin(true);
@@ -133,7 +139,12 @@ export default function DashboardFeature() {
       // TODO: create onchain match tx
       return;
     } else if (queryPairs["type"] === "acceptSecretInvite") {
-      // TODO: accept secret invite
+      if (!queryPairs["guestId"]) {
+        const guestIdRedirect = `supermons://app-request?${queryString}`;
+        window.location.href = guestIdRedirect;
+      } else {
+        // TODO: use guest id to put onchain
+      }
       return;
     } else if (queryPairs["type"] === "getSecretGameResult") {
       if (didSendFinalTx) {

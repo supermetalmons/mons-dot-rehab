@@ -23,6 +23,7 @@ const routes: (query: string) => RouteObject[] = (query) => [
   { path: '/clusters', element: <ClusterFeature /> },
   { path: 'mons-dot-rehab/*', element: <MonsDotRehabFeature /> },
   { path: '/app-response', element: <Navigate to={`/${query}`} replace={true} /> },
+  { path: '/open-in-browser', element: <Navigate to={`/${query}`} replace={true} /> },
 ];
 
 export function AppRoutes() {
@@ -33,6 +34,7 @@ export function AppRoutes() {
       {useRoutes([
         { index: true, element: <DashboardFeature /> },
         { path: '/app-request', element: <DashboardFeature /> },
+        { path: '/open-in-browser', element: <DashboardFeature /> },
         { path: '/', element: <DashboardFeature /> },
         ...routes(query),
         { path: '*', element: <Navigate to={'/${query}'} replace={true} /> },
