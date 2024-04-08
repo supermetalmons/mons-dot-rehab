@@ -76,7 +76,7 @@ export default function DashboardFeature() {
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
       if (someoneJustJoined) {
-        // TODO: to game
+        window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
       } else if (isWaitingForInviteToBeShared) {
         const customUrl = `https://mons.link/invite?code=${encodeURIComponent('your-invite-code')}`; // TODO: correct url to share
         navigator.clipboard.writeText(customUrl);
