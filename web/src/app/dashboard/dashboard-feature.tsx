@@ -59,7 +59,11 @@ export default function DashboardFeature() {
         }
         break;
       case "acceptSecretInvite":
-        if (!queryPairs["guestId"]) {
+        if (redirectCount != 0) {
+          setPageTitle("redirected");
+          setSubtitle("make sure you have mons app installed");
+          setButtonTitle("get mons app");
+        } else if (!queryPairs["guestId"]) {
           setPageTitle("play mons");
           setSubtitle("🥱");
           setButtonTitle("join");
@@ -142,6 +146,10 @@ export default function DashboardFeature() {
       if (!queryPairs["guestId"]) {
         const guestIdRedirect = `supermons://app-request?${queryString}`;
         window.location.href = guestIdRedirect;
+        const newTitle = "🟩 redirected";
+        document.title = newTitle;
+        setHeroBgColor("green");
+        setRedirectCount(1);
       } else {
         // TODO: use guest id to put onchain
       }
