@@ -148,7 +148,7 @@ export default function DashboardFeature() {
         window.location.href = guestIdRedirect;
         const newTitle = "🟩 redirected";
         document.title = newTitle;
-        setHeroBgColor("green");
+        setHeroBgColor("#65ED5A");
         setRedirectCount(1);
       } else {
         // TODO: use guest id to put onchain
@@ -184,14 +184,14 @@ export default function DashboardFeature() {
     } else {
       const newTitle = "🟩 redirected";
       document.title = newTitle;
-      setHeroBgColor("green");
+      setHeroBgColor("#65ED5A");
       window.location.href = `supermons://?type=createSecretInvite`;
       setRedirectCount(1);
     }
   };
 
   return publicKey ? (
-    <div style={{backgroundColor: heroBgColor}}>
+    <div style={{backgroundColor: heroBgColor, borderRadius: '15px'}}>
       <AppHero title={pageTitle} subtitle={subtitle}>
         {!someoneJustJoined && isWaitingForInviteToBeShared && (
           <div>
