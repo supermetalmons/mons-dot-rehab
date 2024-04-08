@@ -27,12 +27,17 @@ export default function DashboardFeature() {
   const [isWaitingForInviteToBeShared, setIsWaitingForInviteToBeShared] = useState(false);
   const [isWaitingForSomeoneToJoin, setIsWaitingForSomeoneToJoin] = useState(false);
   const [someoneJustJoined, setSomeoneJustJoined] = useState(false);
+  const [wentToPlay, setWentToPlay] = useState(false);
 
   useEffect(() => {
     switch (queryPairs["type"]) {
       case "createSecretInvite":
         if (isWaitingForInviteToBeShared) {
-          if (someoneJustJoined) {
+          if (wentToPlay) {
+            setPageTitle("playing");
+            setSubtitle("🏁");
+            setButtonTitle("get match result");
+          } else if (someoneJustJoined) {
             setPageTitle("ready to play");
             setSubtitle("😼");
             setButtonTitle("go");
@@ -57,7 +62,14 @@ export default function DashboardFeature() {
         setSubtitle("🪙");
         setButtonTitle("0.042 sol");
         break;
+      case "getSecretGameResult":
+        // TODO: setup depending on a response
+        setPageTitle("match result");
+        setSubtitle("???");
+        setButtonTitle("???");
+        break;
       default:
+        setWentToPlay(false);
         setSomeoneJustJoined(false);
         setIsWaitingForSomeoneToJoin(false);
         setIsWaitingForInviteToBeShared(false);
@@ -75,8 +87,11 @@ export default function DashboardFeature() {
       window.location.href = "https://mons.link";
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
-      if (someoneJustJoined) {
+      if (wentToPlay) {
+        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
+      } else if (someoneJustJoined) {
         window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
+        setWentToPlay(true);
       } else if (isWaitingForInviteToBeShared) {
         const customUrl = `https://mons.link/invite?code=${encodeURIComponent('your-invite-code')}`; // TODO: correct url to share
         navigator.clipboard.writeText(customUrl);
@@ -101,6 +116,9 @@ export default function DashboardFeature() {
       return;
     } else if (queryPairs["type"] === "acceptSecretInvite") {
       // TODO: accept secret invite
+      return;
+    } else if (queryPairs["type"] === "getSecretGameResult") {
+      // TODO: getSecretGameResult or complete onchain match if result is there already
       return;
     } else {
       const newTitle = "🟩 redirected";
