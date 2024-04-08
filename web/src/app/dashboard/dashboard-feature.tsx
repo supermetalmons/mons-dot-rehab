@@ -63,10 +63,19 @@ export default function DashboardFeature() {
         setButtonTitle("0.042 sol");
         break;
       case "getSecretGameResult":
-        // TODO: setup depending on a response
-        setPageTitle("match result");
-        setSubtitle("???");
-        setButtonTitle("???");
+        if (queryPairs["result"] === "draw") {
+          setPageTitle("it's a draw!");
+          setSubtitle("🤝");
+          setButtonTitle("split prize");
+        } else if (!queryPairs["result"]) {
+          setPageTitle("playing");
+          setSubtitle("🏁");
+          setButtonTitle("get match result");
+        } else {
+          setPageTitle("you won / you lost"); // TODO: check id queryPairs["result"]
+          setSubtitle(`🏅`);
+          setButtonTitle("gg");
+        }
         break;
       default:
         setWentToPlay(false);
@@ -118,7 +127,13 @@ export default function DashboardFeature() {
       // TODO: accept secret invite
       return;
     } else if (queryPairs["type"] === "getSecretGameResult") {
-      // TODO: getSecretGameResult or complete onchain match if result is there already
+      if (queryPairs["result"] === "draw") {
+        // TODO: split tx
+      } else if (!queryPairs["result"]) {
+        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
+      } else {
+        // TODO: claim prize tx or leave
+      }
       return;
     } else {
       const newTitle = "🟩 redirected";
