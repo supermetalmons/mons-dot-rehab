@@ -28,6 +28,7 @@ export default function DashboardFeature() {
   const [isWaitingForSomeoneToJoin, setIsWaitingForSomeoneToJoin] = useState(false);
   const [someoneJustJoined, setSomeoneJustJoined] = useState(false);
   const [wentToPlay, setWentToPlay] = useState(false);
+  const [didSendFinalTx, setDidSendFinalTx] = useState(false);
 
   useEffect(() => {
     switch (queryPairs["type"]) {
@@ -63,7 +64,11 @@ export default function DashboardFeature() {
         setButtonTitle("0.042 sol");
         break;
       case "getSecretGameResult":
-        if (queryPairs["result"] === "draw") {
+        if (didSendFinalTx) {
+          setPageTitle("all done");
+          setSubtitle("✅");
+          setButtonTitle("ok");
+        } else if (queryPairs["result"] === "draw") {
           setPageTitle("it's a draw!");
           setSubtitle("🤝");
           setButtonTitle("split prize");
@@ -131,14 +136,30 @@ export default function DashboardFeature() {
       // TODO: accept secret invite
       return;
     } else if (queryPairs["type"] === "getSecretGameResult") {
-      if (queryPairs["result"] === "draw") {
-        // TODO: split tx
+      if (didSendFinalTx) {
+        window.location.href = "https://mons.rehab";
+      } else if (queryPairs["result"] === "draw") {
+        setIsButtonDisabled(true);
+        setIsLoading(true);
+        // TODO: actually send split tx
+        setTimeout(() => {
+          setIsButtonDisabled(false);
+          setIsLoading(false);
+          setDidSendFinalTx(true);
+        }, 5000);
       } else if (queryPairs["result"] === "none" || !queryPairs["result"]) {
         window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
       } else if (queryPairs["result"] === "gg") {
         window.location.href = "https://mons.rehab";
-      } if (queryPairs["result"] === "win") {
-        // TODO: claim
+      } else if (queryPairs["result"] === "win") {
+        setIsButtonDisabled(true);
+        setIsLoading(true);
+        // TODO: actually send claim tx
+        setTimeout(() => {
+          setIsButtonDisabled(false);
+          setIsLoading(false);
+          setDidSendFinalTx(true);
+        }, 5000);
       }
       return;
     } else {
