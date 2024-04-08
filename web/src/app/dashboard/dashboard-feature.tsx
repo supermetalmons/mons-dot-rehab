@@ -24,12 +24,12 @@ export default function DashboardFeature() {
   const [redirectCount, setRedirectCount] = useState(0);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isWaitingForInviteToBeAccepted, setIsWaitingForInviteToBeAccepted] = useState(false);
+  const [isWaitingForInviteToBeShared, setIsWaitingForInviteToBeShared] = useState(false);
 
   useEffect(() => {
     switch (queryPairs["type"]) {
       case "createSecretInvite":
-        if (isWaitingForInviteToBeAccepted) {
+        if (isWaitingForInviteToBeShared) {
           setPageTitle("onchain match created");
           setSubtitle("👇");
           setButtonTitle("copy invite link");
@@ -45,7 +45,7 @@ export default function DashboardFeature() {
         setButtonTitle("0.042 sol");
         break;
       default:
-        setIsWaitingForInviteToBeAccepted(false);
+        setIsWaitingForInviteToBeShared(false);
         setIsButtonDisabled(false);
         setIsLoading(false);
         setPageTitle(redirectCount === 0 ? "mons" : "redirected");
@@ -60,14 +60,14 @@ export default function DashboardFeature() {
       window.location.href = "https://mons.link";
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
-      if (isWaitingForInviteToBeAccepted) {
+      if (isWaitingForInviteToBeShared) {
         const customUrl = `https://mons.link/invite?code=${encodeURIComponent('your-invite-code')}`; // TODO: correct url to share
         navigator.clipboard.writeText(customUrl);
       } else {
         setIsButtonDisabled(true);
         setIsLoading(true);
         setTimeout(() => {
-          setIsWaitingForInviteToBeAccepted(true);
+          setIsWaitingForInviteToBeShared(true);
           setIsButtonDisabled(false);
           setIsLoading(false);
         }, 3000);
@@ -89,7 +89,7 @@ export default function DashboardFeature() {
   return publicKey ? (
     <div style={{backgroundColor: heroBgColor}}>
       <AppHero title={pageTitle} subtitle={subtitle}>
-        {isWaitingForInviteToBeAccepted && (
+        {isWaitingForInviteToBeShared && (
           <div>
             <input value={`〖░secret░invite░link░〗`} readOnly />
             <p><br /></p>
