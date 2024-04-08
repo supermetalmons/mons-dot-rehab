@@ -24,13 +24,20 @@ export default function DashboardFeature() {
   const [redirectCount, setRedirectCount] = useState(0);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isWaitingForInviteToBeAccepted, setIsWaitingForInviteToBeAccepted] = useState(false);
 
   useEffect(() => {
     switch (queryPairs["type"]) {
       case "createSecretInvite":
-        setPageTitle("create onchain match");
-        setSubtitle("🪙");
-        setButtonTitle("0.042 sol");
+        if (isWaitingForInviteToBeAccepted) {
+          setPageTitle("onchain match created");
+          setSubtitle("👇");
+          setButtonTitle("copy invite link");
+        } else {
+          setPageTitle("create onchain match");
+          setSubtitle("🪙");
+          setButtonTitle("0.042 sol");
+        }
         break;
       case "acceptSecretInvite":
         setPageTitle("join onchain match");
@@ -38,6 +45,7 @@ export default function DashboardFeature() {
         setButtonTitle("0.042 sol");
         break;
       default:
+        setIsWaitingForInviteToBeAccepted(false);
         setIsButtonDisabled(false);
         setIsLoading(false);
         setPageTitle(redirectCount === 0 ? "mons" : "redirected");
@@ -52,11 +60,22 @@ export default function DashboardFeature() {
       window.location.href = "https://mons.link";
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
-      setIsButtonDisabled(true);
-      setIsLoading(true);
+      if (isWaitingForInviteToBeAccepted) {
+        const customUrl = `https://mons.link/invite?code=${encodeURIComponent('your-invite-code')}`; // TODO: correct url to share
+        navigator.clipboard.writeText(customUrl);
+      } else {
+        setIsButtonDisabled(true);
+        setIsLoading(true);
+        setTimeout(() => {
+          setIsWaitingForInviteToBeAccepted(true);
+          setIsButtonDisabled(false);
+          setIsLoading(false);
+        }, 3000);
+      }
       // TODO: create onchain match tx
       return;
     } else if (queryPairs["type"] === "acceptSecretInvite") {
+      // TODO: accept secret invite
       return;
     } else {
       const newTitle = "🟩 redirected";
@@ -70,6 +89,12 @@ export default function DashboardFeature() {
   return publicKey ? (
     <div style={{backgroundColor: heroBgColor}}>
       <AppHero title={pageTitle} subtitle={subtitle}>
+        {isWaitingForInviteToBeAccepted && (
+          <div>
+            <input value={`〖░secret░invite░link░〗`} readOnly />
+            <p><br /></p>
+          </div>
+        )}
         <button className="btn btn-primary" onClick={handleRedirect} disabled={isButtonDisabled}>
           {isLoading ? <span>processing...</span> : buttonTitle}
         </button>
