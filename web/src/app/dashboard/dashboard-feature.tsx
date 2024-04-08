@@ -245,10 +245,6 @@ export default function DashboardFeature() {
           </button>
         )}
         {isLoading && <span className="loading loading-spinner"></span>}
-        <p><br /></p>
-          {Object.entries(queryPairs).map(([key, value]) => (
-            <p key={key}>{`${key} ~ ${value}`}<br /><br /></p>
-          ))}
         </div>
       </AppHero>
     </div>
