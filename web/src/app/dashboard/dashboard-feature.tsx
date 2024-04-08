@@ -26,18 +26,26 @@ export default function DashboardFeature() {
   const [isLoading, setIsLoading] = useState(false);
   const [isWaitingForInviteToBeShared, setIsWaitingForInviteToBeShared] = useState(false);
   const [isWaitingForSomeoneToJoin, setIsWaitingForSomeoneToJoin] = useState(false);
+  const [someoneJustJoined, setSomeoneJustJoined] = useState(false);
 
   useEffect(() => {
     switch (queryPairs["type"]) {
       case "createSecretInvite":
         if (isWaitingForInviteToBeShared) {
-          if (isWaitingForSomeoneToJoin) {
-            setPageTitle("waiting to start");
+          if (someoneJustJoined) {
+            setPageTitle("ready to play");
+            setSubtitle("😼");
+            setButtonTitle("go");
+            setIsLoading(false);
+          } else if (isWaitingForSomeoneToJoin) {
+            setPageTitle("waiting for a match");
+            setSubtitle("🫖");
+            setButtonTitle("copy invite link");
           } else {
             setPageTitle("onchain match created");
+            setSubtitle("👇");
+            setButtonTitle("copy invite link");
           }
-          setSubtitle("👇");
-          setButtonTitle("copy invite link");
         } else {
           setPageTitle("create onchain match");
           setSubtitle("🪙");
@@ -50,6 +58,7 @@ export default function DashboardFeature() {
         setButtonTitle("0.042 sol");
         break;
       default:
+        setSomeoneJustJoined(false);
         setIsWaitingForSomeoneToJoin(false);
         setIsWaitingForInviteToBeShared(false);
         setIsButtonDisabled(false);
@@ -66,11 +75,19 @@ export default function DashboardFeature() {
       window.location.href = "https://mons.link";
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
-      if (isWaitingForInviteToBeShared) {
+      if (someoneJustJoined) {
+        // TODO: to game
+      } else if (isWaitingForInviteToBeShared) {
         const customUrl = `https://mons.link/invite?code=${encodeURIComponent('your-invite-code')}`; // TODO: correct url to share
         navigator.clipboard.writeText(customUrl);
-        setIsWaitingForSomeoneToJoin(true);
-        setIsLoading(true);
+        if (!isWaitingForSomeoneToJoin) {
+          setIsWaitingForSomeoneToJoin(true);
+          setIsLoading(true);
+          setTimeout(() => {
+            // TODO: actually monitor invite status
+            setSomeoneJustJoined(true);
+          }, 7000);
+        }
       } else {
         setIsButtonDisabled(true);
         setIsLoading(true);
@@ -78,7 +95,7 @@ export default function DashboardFeature() {
           setIsWaitingForInviteToBeShared(true);
           setIsButtonDisabled(false);
           setIsLoading(false);
-        }, 3000);
+        }, 5000);
       }
       // TODO: create onchain match tx
       return;
@@ -97,9 +114,11 @@ export default function DashboardFeature() {
   return publicKey ? (
     <div style={{backgroundColor: heroBgColor}}>
       <AppHero title={pageTitle} subtitle={subtitle}>
-        {isWaitingForInviteToBeShared && (
+        {!someoneJustJoined && isWaitingForInviteToBeShared && (
           <div>
-            <input value={`░░secret░invite░link░░`} readOnly />
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <input value={`〖 secret invite link 〗`} readOnly style={{ textAlign: 'center' }} />
+            </div>
             <p><br /></p>
           </div>
         )}
