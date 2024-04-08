@@ -160,6 +160,11 @@ export default function DashboardFeature() {
         </button>
         <div>
         <p><br /></p>
+        {queryPairs["type"] === "getSecretGameResult" && !queryPairs["result"] && (
+          <button className="btn btn-primary" onClick={() => {window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;}}>
+            {'back to game'}
+          </button>
+        )}
         {isLoading && <span className="loading loading-spinner"></span>}
         <p><br /></p>
           {Object.entries(queryPairs).map(([key, value]) => (
