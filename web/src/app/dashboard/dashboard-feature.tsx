@@ -33,7 +33,11 @@ export default function DashboardFeature() {
   useEffect(() => {
     switch (queryPairs["type"]) {
       case "createSecretInvite":
-        if (isWaitingForInviteToBeShared) {
+        if (redirectCount != 0) {
+          setPageTitle("redirected");
+          setSubtitle("make sure you have mons app installed");
+          setButtonTitle("get mons app");
+        } else if (isWaitingForInviteToBeShared) {
           if (wentToPlay) {
             setPageTitle("playing");
             setSubtitle("🏁");
@@ -59,7 +63,11 @@ export default function DashboardFeature() {
         }
         break;
       case "acceptSecretInvite":
-        if (wentToPlay) {
+        if (redirectCount != 0) {
+          setPageTitle("redirected");
+          setSubtitle("make sure you have mons app installed");
+          setButtonTitle("get mons app");
+        } else if (wentToPlay) {
           setPageTitle("playing");
           setSubtitle("🏁");
           setButtonTitle("get match result");
@@ -68,10 +76,6 @@ export default function DashboardFeature() {
           setSubtitle("😼");
           setButtonTitle("go");
           setIsLoading(false);
-        } else if (redirectCount != 0) {
-          setPageTitle("redirected");
-          setSubtitle("make sure you have mons app installed");
-          setButtonTitle("get mons app");
         } else if (!queryPairs["guestId"]) {
           setPageTitle("play mons");
           setSubtitle("🥱");
@@ -83,7 +87,11 @@ export default function DashboardFeature() {
         }
         break;
       case "getSecretGameResult":
-        if (didSendFinalTx) {
+        if (redirectCount != 0) {
+          setPageTitle("redirected");
+          setSubtitle("make sure you have mons app installed");
+          setButtonTitle("get mons app");
+        } else if (didSendFinalTx) {
           setPageTitle("all done");
           setSubtitle("✅");
           setButtonTitle("ok");
@@ -102,7 +110,7 @@ export default function DashboardFeature() {
         } else if (queryPairs["result"] === "gg") {
           setPageTitle("gg");
           setSubtitle(`🥈`);
-          setButtonTitle("ok");
+          setButtonTitle("ok"); 
         }
         break;
       default:
@@ -125,6 +133,7 @@ export default function DashboardFeature() {
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
       if (wentToPlay) {
+        didRedirect();
         window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
       } else if (someoneJustJoined) {
         window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
@@ -153,17 +162,15 @@ export default function DashboardFeature() {
       return;
     } else if (queryPairs["type"] === "acceptSecretInvite") {
       if (wentToPlay) {
+        didRedirect();
         window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
       } else if (someoneJustJoined) {
         window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
         setWentToPlay(true);
       } else if (!queryPairs["guestId"]) {
+        didRedirect();
         const guestIdRedirect = `supermons://app-request?${queryString}`;
         window.location.href = guestIdRedirect;
-        const newTitle = "🟩 redirected";
-        document.title = newTitle;
-        setHeroBgColor("#65ED5A");
-        setRedirectCount(1);
       } else if (!someoneJustJoined) {
         // TODO: join onchain match tx
         setIsButtonDisabled(true);
@@ -188,6 +195,7 @@ export default function DashboardFeature() {
           setDidSendFinalTx(true);
         }, 5000);
       } else if (queryPairs["result"] === "none" || !queryPairs["result"]) {
+        didRedirect();
         window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
       } else if (queryPairs["result"] === "gg") {
         window.location.href = "https://mons.rehab";
@@ -203,13 +211,17 @@ export default function DashboardFeature() {
       }
       return;
     } else {
-      const newTitle = "🟩 redirected";
-      document.title = newTitle;
-      setHeroBgColor("#65ED5A");
+      didRedirect();
       window.location.href = `supermons://?type=createSecretInvite`;
-      setRedirectCount(1);
     }
   };
+
+  function didRedirect() {
+    const newTitle = "🟩 redirected";
+    document.title = newTitle;
+    setHeroBgColor("#65ED5A");
+    setRedirectCount(1);
+  }
 
   return publicKey ? (
     <div style={{backgroundColor: heroBgColor, borderRadius: '15px'}}>
@@ -227,7 +239,7 @@ export default function DashboardFeature() {
         </button>
         <div>
         <p><br /></p>
-        {queryPairs["type"] === "getSecretGameResult" && (queryPairs["result"] === "none" || !queryPairs["result"]) && (
+        {redirectCount == 0 && queryPairs["type"] === "getSecretGameResult" && (queryPairs["result"] === "none" || !queryPairs["result"]) && (
           <button className="btn btn-primary" onClick={() => {window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;}}>
             {'back to game'}
           </button>
