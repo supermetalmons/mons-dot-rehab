@@ -59,7 +59,16 @@ export default function DashboardFeature() {
         }
         break;
       case "acceptSecretInvite":
-        if (redirectCount != 0) {
+        if (wentToPlay) {
+          setPageTitle("playing");
+          setSubtitle("🏁");
+          setButtonTitle("get match result");
+        } else if (someoneJustJoined) {
+          setPageTitle("ready to play");
+          setSubtitle("😼");
+          setButtonTitle("go");
+          setIsLoading(false);
+        } else if (redirectCount != 0) {
           setPageTitle("redirected");
           setSubtitle("make sure you have mons app installed");
           setButtonTitle("get mons app");
@@ -132,6 +141,7 @@ export default function DashboardFeature() {
           }, 7000);
         }
       } else {
+        // TODO: create onchain match tx
         setIsButtonDisabled(true);
         setIsLoading(true);
         setTimeout(() => {
@@ -140,18 +150,29 @@ export default function DashboardFeature() {
           setIsLoading(false);
         }, 5000);
       }
-      // TODO: create onchain match tx
       return;
     } else if (queryPairs["type"] === "acceptSecretInvite") {
-      if (!queryPairs["guestId"]) {
+      if (wentToPlay) {
+        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
+      } else if (someoneJustJoined) {
+        window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
+        setWentToPlay(true);
+      } else if (!queryPairs["guestId"]) {
         const guestIdRedirect = `supermons://app-request?${queryString}`;
         window.location.href = guestIdRedirect;
         const newTitle = "🟩 redirected";
         document.title = newTitle;
         setHeroBgColor("#65ED5A");
         setRedirectCount(1);
-      } else {
-        // TODO: use guest id to put onchain
+      } else if (!someoneJustJoined) {
+        // TODO: join onchain match tx
+        setIsButtonDisabled(true);
+        setIsLoading(true);
+        setTimeout(() => {
+          setSomeoneJustJoined(true);
+          setIsButtonDisabled(false);
+          setIsLoading(false);
+        }, 5000);
       }
       return;
     } else if (queryPairs["type"] === "getSecretGameResult") {
