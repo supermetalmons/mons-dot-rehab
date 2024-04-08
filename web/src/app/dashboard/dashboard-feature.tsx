@@ -22,6 +22,8 @@ export default function DashboardFeature() {
   const [buttonTitle, setButtonTitle] = useState("");
   const [heroBgColor, setHeroBgColor] = useState("");
   const [redirectCount, setRedirectCount] = useState(0);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     switch (queryPairs["type"]) {
@@ -36,6 +38,8 @@ export default function DashboardFeature() {
         setButtonTitle("0.042 sol");
         break;
       default:
+        setIsButtonDisabled(false);
+        setIsLoading(false);
         setPageTitle(redirectCount === 0 ? "mons" : "redirected");
         setSubtitle(redirectCount === 0 ? "🥱" : "make sure you have mons app installed");
         setButtonTitle(redirectCount === 0 ? "new match" : "get mons app");
@@ -48,6 +52,9 @@ export default function DashboardFeature() {
       window.location.href = "https://mons.link";
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
+      setIsButtonDisabled(true);
+      setIsLoading(true);
+      // TODO: create onchain match tx
       return;
     } else if (queryPairs["type"] === "acceptSecretInvite") {
       return;
@@ -63,9 +70,13 @@ export default function DashboardFeature() {
   return publicKey ? (
     <div style={{backgroundColor: heroBgColor}}>
       <AppHero title={pageTitle} subtitle={subtitle}>
-        <button className="btn btn-primary" onClick={handleRedirect}>{buttonTitle}</button>
+        <button className="btn btn-primary" onClick={handleRedirect} disabled={isButtonDisabled}>
+          {isLoading ? <span>processing...</span> : buttonTitle}
+        </button>
         <div>
-        <p><br /><br /></p>
+        <p><br /></p>
+        {isLoading && <span className="loading loading-spinner"></span>}
+        <p><br /></p>
           {Object.entries(queryPairs).map(([key, value]) => (
             <p key={key}>{`${key} ~ ${value}`}<br /><br /></p>
           ))}
