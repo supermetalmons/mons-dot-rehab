@@ -3,8 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
+import { useMonsDotRehabProgram } from '../mons-dot-rehab/mons-dot-rehab-data-access';
+import { Keypair } from '@solana/web3.js';
 
 export default function DashboardFeature() {
+  const { greet } = useMonsDotRehabProgram();
   const location = useLocation();
   const queryString = location.search.substring(1);
   const queryPairs = queryString.split("&").reduce<Record<string, string>>((acc, pair) => {
@@ -150,14 +153,16 @@ export default function DashboardFeature() {
           }, 7000);
         }
       } else {
-        // TODO: create onchain match tx
         setIsButtonDisabled(true);
         setIsLoading(true);
-        setTimeout(() => {
+        greet.mutateAsync(Keypair.generate()).then(result => {
           setIsWaitingForInviteToBeShared(true);
           setIsButtonDisabled(false);
           setIsLoading(false);
-        }, 5000);
+        }).catch(error => {
+          setIsButtonDisabled(false);
+          setIsLoading(false);
+        });
       }
       return;
     } else if (queryPairs["type"] === "acceptSecretInvite") {
@@ -172,14 +177,16 @@ export default function DashboardFeature() {
         const guestIdRedirect = `supermons://app-request?${queryString}`;
         window.location.href = guestIdRedirect;
       } else if (!someoneJustJoined) {
-        // TODO: join onchain match tx
         setIsButtonDisabled(true);
         setIsLoading(true);
-        setTimeout(() => {
+        greet.mutateAsync(Keypair.generate()).then(result => {
           setSomeoneJustJoined(true);
           setIsButtonDisabled(false);
           setIsLoading(false);
-        }, 5000);
+        }).catch(error => {
+          setIsButtonDisabled(false);
+          setIsLoading(false);
+        });
       }
       return;
     } else if (queryPairs["type"] === "getSecretGameResult") {
@@ -188,12 +195,14 @@ export default function DashboardFeature() {
       } else if (queryPairs["result"] === "draw") {
         setIsButtonDisabled(true);
         setIsLoading(true);
-        // TODO: actually send split tx
-        setTimeout(() => {
+        greet.mutateAsync(Keypair.generate()).then(result => {
           setIsButtonDisabled(false);
           setIsLoading(false);
           setDidSendFinalTx(true);
-        }, 5000);
+        }).catch(error => {
+          setIsButtonDisabled(false);
+          setIsLoading(false);
+        });
       } else if (queryPairs["result"] === "none" || !queryPairs["result"]) {
         didRedirect();
         window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
@@ -202,12 +211,14 @@ export default function DashboardFeature() {
       } else if (queryPairs["result"] === "win") {
         setIsButtonDisabled(true);
         setIsLoading(true);
-        // TODO: actually send claim tx
-        setTimeout(() => {
+        greet.mutateAsync(Keypair.generate()).then(result => {
           setIsButtonDisabled(false);
           setIsLoading(false);
           setDidSendFinalTx(true);
-        }, 5000);
+        }).catch(error => {
+          setIsButtonDisabled(false);
+          setIsLoading(false);
+        });
       }
       return;
     } else {
