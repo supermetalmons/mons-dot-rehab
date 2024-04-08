@@ -25,12 +25,17 @@ export default function DashboardFeature() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isWaitingForInviteToBeShared, setIsWaitingForInviteToBeShared] = useState(false);
+  const [isWaitingForSomeoneToJoin, setIsWaitingForSomeoneToJoin] = useState(false);
 
   useEffect(() => {
     switch (queryPairs["type"]) {
       case "createSecretInvite":
         if (isWaitingForInviteToBeShared) {
-          setPageTitle("onchain match created");
+          if (isWaitingForSomeoneToJoin) {
+            setPageTitle("waiting to start");
+          } else {
+            setPageTitle("onchain match created");
+          }
           setSubtitle("👇");
           setButtonTitle("copy invite link");
         } else {
@@ -45,6 +50,7 @@ export default function DashboardFeature() {
         setButtonTitle("0.042 sol");
         break;
       default:
+        setIsWaitingForSomeoneToJoin(false);
         setIsWaitingForInviteToBeShared(false);
         setIsButtonDisabled(false);
         setIsLoading(false);
@@ -63,6 +69,8 @@ export default function DashboardFeature() {
       if (isWaitingForInviteToBeShared) {
         const customUrl = `https://mons.link/invite?code=${encodeURIComponent('your-invite-code')}`; // TODO: correct url to share
         navigator.clipboard.writeText(customUrl);
+        setIsWaitingForSomeoneToJoin(true);
+        setIsLoading(true);
       } else {
         setIsButtonDisabled(true);
         setIsLoading(true);
@@ -91,12 +99,12 @@ export default function DashboardFeature() {
       <AppHero title={pageTitle} subtitle={subtitle}>
         {isWaitingForInviteToBeShared && (
           <div>
-            <input value={`〖░secret░invite░link░〗`} readOnly />
+            <input value={`░░secret░invite░link░░`} readOnly />
             <p><br /></p>
           </div>
         )}
         <button className="btn btn-primary" onClick={handleRedirect} disabled={isButtonDisabled}>
-          {isLoading ? <span>processing...</span> : buttonTitle}
+          {isLoading && isButtonDisabled ? <span>processing...</span> : buttonTitle}
         </button>
         <div>
         <p><br /></p>
