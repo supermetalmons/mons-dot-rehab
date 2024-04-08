@@ -44,7 +44,7 @@ export default function DashboardFeature() {
             setIsLoading(false);
           } else if (isWaitingForSomeoneToJoin) {
             setPageTitle("waiting for a match");
-            setSubtitle("🫖");
+            setSubtitle("🐣");
             setButtonTitle("copy invite link");
           } else {
             setPageTitle("onchain match created");
@@ -67,14 +67,18 @@ export default function DashboardFeature() {
           setPageTitle("it's a draw!");
           setSubtitle("🤝");
           setButtonTitle("split prize");
-        } else if (!queryPairs["result"]) {
+        } else if (queryPairs["result"] === "none" || !queryPairs["result"]) {
           setPageTitle("playing");
           setSubtitle("🏁");
           setButtonTitle("get match result");
-        } else {
-          setPageTitle("you won / you lost"); // TODO: check id queryPairs["result"]
+        } else if (queryPairs["result"] === "win") {
+          setPageTitle("you won");
           setSubtitle(`🏅`);
-          setButtonTitle("gg");
+          setButtonTitle("claim prize");
+        } else if (queryPairs["result"] === "gg") {
+          setPageTitle("gg");
+          setSubtitle(`🥈`);
+          setButtonTitle("ok");
         }
         break;
       default:
@@ -129,10 +133,12 @@ export default function DashboardFeature() {
     } else if (queryPairs["type"] === "getSecretGameResult") {
       if (queryPairs["result"] === "draw") {
         // TODO: split tx
-      } else if (!queryPairs["result"]) {
+      } else if (queryPairs["result"] === "none" || !queryPairs["result"]) {
         window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
-      } else {
-        // TODO: claim prize tx or leave
+      } else if (queryPairs["result"] === "gg") {
+        window.location.href = "https://mons.rehab";
+      } if (queryPairs["result"] === "win") {
+        // TODO: claim
       }
       return;
     } else {
@@ -160,7 +166,7 @@ export default function DashboardFeature() {
         </button>
         <div>
         <p><br /></p>
-        {queryPairs["type"] === "getSecretGameResult" && !queryPairs["result"] && (
+        {queryPairs["type"] === "getSecretGameResult" && (queryPairs["result"] === "none" || !queryPairs["result"]) && (
           <button className="btn btn-primary" onClick={() => {window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;}}>
             {'back to game'}
           </button>
