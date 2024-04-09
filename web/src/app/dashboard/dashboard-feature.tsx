@@ -150,7 +150,7 @@ export default function DashboardFeature() {
           setTimeout(() => {
             // TODO: actually monitor invite status
             setSomeoneJustJoined(true);
-          }, 7000);
+          }, 13000);
         }
       } else {
         setIsButtonDisabled(true);
