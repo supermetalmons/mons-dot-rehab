@@ -1,8 +1,10 @@
 # mons-dot-rehab
 
-This project is generated with the [create-solana-dapp](https://github.com/solana-developers/create-solana-dapp) generator.
+play mons
 
 ## Getting Started
+
+This project is generated with the [create-solana-dapp](https://github.com/solana-developers/create-solana-dapp) generator.
 
 ### Prerequisites
 
