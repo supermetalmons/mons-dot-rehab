@@ -65,6 +65,27 @@ export function useMonsDotRehabProgram() {
     },
     onError: (error) => toast.error(`Failed to join game: ${error.message}`),
   });
+
+  const resolveGame = useMutation({
+    mutationKey: ['monsDotRehab', 'resolveGame', { cluster }],
+    mutationFn: async () => {
+      const gameID = Math.floor(Math.random() * 1000000); // TODO: use actual id
+      const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
+      const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
+      return program.rpc.resolveGame({
+        accounts: {
+          game: gamePDA,
+          caller: provider.wallet.publicKey
+        },
+        signers: [],
+      });
+    },
+    onSuccess: (signature) => {
+      transactionToast(signature);
+      toast.success('Game resolved successfully!');
+    },
+    onError: (error) => toast.error(`Failed to resolve game: ${error.message}`),
+  });
   
   return {
     program,
@@ -72,5 +93,6 @@ export function useMonsDotRehabProgram() {
     createGame,
     joinGame,
     getProgramAccount,
+    resolveGame,
   };
 }

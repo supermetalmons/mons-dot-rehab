@@ -60,17 +60,14 @@ pub mod mons_dot_rehab {
     pub fn resolve_game(ctx: Context<ResolveGame>) -> Result<()> {
         let game = &mut ctx.accounts.game;
         let caller = ctx.accounts.caller.key();
-
         require!(caller == game.host_id || caller == game.guest_id, ErrorCode::Unauthorized);
-
         let game_lamports = ctx.accounts.game.to_account_info().lamports();
         require!(game_lamports >= 2 * GAME_COST, ErrorCode::GameAlreadyResolvedOrInsufficientFunds);
-
         **ctx.accounts.caller.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.caller.to_account_info().lamports().checked_add(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
         **ctx.accounts.game.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.game.to_account_info().lamports().checked_sub(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
-
         Ok(())
     }
+    
 }
 
 #[derive(Accounts)]
