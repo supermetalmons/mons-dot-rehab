@@ -1,4 +1,6 @@
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::system_instruction;
+use anchor_lang::solana_program::program::invoke;
 
 declare_id!("FWMFXwhJvZzC6xq1rTdmTVYw9yMSY1T8LYwSMqRvyQ6A");
 
@@ -14,8 +16,19 @@ pub mod mons_dot_rehab {
         game.host_id = ctx.accounts.host.key();
         game.guest_id = Pubkey::default();
 
-        **ctx.accounts.game.to_account_info().try_borrow_mut_lamports()? += GAME_COST;
-        **ctx.accounts.host.to_account_info().try_borrow_mut_lamports()? -= GAME_COST;
+        let transfer_instruction = system_instruction::transfer(
+            ctx.accounts.host.to_account_info().key,
+            ctx.accounts.game.to_account_info().key,
+            GAME_COST,
+        );
+        invoke(
+            &transfer_instruction,
+            &[
+                ctx.accounts.host.to_account_info(),
+                ctx.accounts.game.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
 
         Ok(())
     }
@@ -52,11 +65,19 @@ pub mod mons_dot_rehab {
 #[derive(Accounts)]
 #[instruction(game_id: u64)]
 pub struct CreateGame<'info> {
-    #[account(init, payer = host, space = 8 + 8 + 32 + 32, seeds = [b"game", &game_id.to_le_bytes()[..]], bump)]
+    #[account(init, payer = host, space = 1 + 8 + 8 + 32 + 32, seeds = [b"game", &game_id.to_le_bytes()[..]], bump)]
     pub game: Account<'info, Game>,
     #[account(mut)]
     pub host: Signer<'info>,
     pub system_program: Program<'info, System>,
+}
+
+#[account]
+pub struct Game {
+    pub game_id: u64,
+    pub host_id: Pubkey,
+    pub guest_id: Pubkey,
+    pub bump: u8,
 }
 
 #[derive(Accounts)]
@@ -72,14 +93,6 @@ pub struct ResolveGame<'info> {
     pub game: Account<'info, Game>,
     #[account(mut)]
     pub caller: Signer<'info>,
-}
-
-#[account]
-pub struct Game {
-    pub game_id: u64,
-    pub host_id: Pubkey,
-    pub guest_id: Pubkey,
-    pub bump: u8,
 }
 
 #[error_code]

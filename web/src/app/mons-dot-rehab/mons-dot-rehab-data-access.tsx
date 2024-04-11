@@ -1,12 +1,14 @@
 import { programId, MonsDotRehabIDL } from '@mons-dot-rehab/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { Keypair } from '@solana/web3.js';
+import { Keypair, SystemProgram, PublicKey } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useCluster } from '../cluster/cluster-data-access';
 import { useAnchorProvider } from '../solana/solana-provider';
 import { useTransactionToast } from '../ui/ui-layout';
+import { Buffer } from 'buffer';
+import BN from 'bn.js';
 
 export function useMonsDotRehabProgram() {
   const { connection } = useConnection();
@@ -20,19 +22,33 @@ export function useMonsDotRehabProgram() {
     queryFn: () => connection.getParsedAccountInfo(programId),
   });
 
-  const greet = useMutation({
-    mutationKey: ['monsDotRehab', 'greet', { cluster }],
-    mutationFn: (keypair: Keypair) => program.methods.greet().rpc(),
+  const createGame = useMutation({
+    mutationKey: ['monsDotRehab', 'createGame', { cluster }],
+    mutationFn: async () => {
+      const gameID = Math.floor(Math.random() * 1000000);
+      const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
+      const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
+      return program.rpc.createGame(new BN(gameID), {
+        accounts: {
+          game: gamePDA,
+          host: provider.wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+        },
+        signers: [],
+      });
+    },
     onSuccess: (signature) => {
       transactionToast(signature);
+      toast.success('Game created successfully!');
     },
-    onError: () => toast.error('Failed to run program'),
+    onError: (error) => toast.error(`Failed to create game: ${error.message}`),
   });
-
+  
+  
   return {
     program,
     programId,
+    createGame,
     getProgramAccount,
-    greet,
   };
 }

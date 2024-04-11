@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-mons_dot_rehab = "FWMFXwhJvZzC6xq1rTdmTVYw9yMSY1T8LYwSMqRvyQ6A"
+mons_dot_rehab = "3pNX9MinmcZMQXHvQj46h789ZMD7Skv3sVz9YnNZfkEy"
 
 [registry]
 url = "https://api.apr.dev"
