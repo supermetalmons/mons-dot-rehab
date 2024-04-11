@@ -24,8 +24,8 @@ export function useMonsDotRehabProgram() {
 
   const createGame = useMutation({
     mutationKey: ['monsDotRehab', 'createGame', { cluster }],
-    mutationFn: async () => {
-      const gameID = Math.floor(Math.random() * 1000000); // TODO: use actual id
+    mutationFn: async (gameIdString: string) => {
+      const gameID = convertBase62StringToBN(gameIdString);
       const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
       const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
       return program.rpc.createGame(new BN(gameID), {
@@ -46,8 +46,8 @@ export function useMonsDotRehabProgram() {
 
   const joinGame = useMutation({
     mutationKey: ['monsDotRehab', 'joinGame', { cluster }],
-    mutationFn: async () => {
-      const gameID = Math.floor(Math.random() * 1000000); // TODO: use actual id
+    mutationFn: async (gameIdString: string) => {
+      const gameID = convertBase62StringToBN(gameIdString);
       const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
       const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
       return program.rpc.joinGame(new BN(gameID), {
@@ -68,8 +68,8 @@ export function useMonsDotRehabProgram() {
 
   const resolveGame = useMutation({
     mutationKey: ['monsDotRehab', 'resolveGame', { cluster }],
-    mutationFn: async () => {
-      const gameID = Math.floor(Math.random() * 1000000); // TODO: use actual id
+    mutationFn: async (gameIdString: string) => {
+      const gameID = convertBase62StringToBN(gameIdString);
       const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
       const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
       return program.rpc.resolveGame({
@@ -95,4 +95,19 @@ export function useMonsDotRehabProgram() {
     getProgramAccount,
     resolveGame,
   };
+}
+
+function convertBase62StringToBN(str: string) {
+  const base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let result = new BN(0);
+
+  for (let char of str) {
+      const value = base62.indexOf(char);
+      if (value === -1) {
+          throw new Error(`Invalid character in string: ${char}`);
+      }
+      result = result.mul(new BN(62)).add(new BN(value));
+  }
+
+  return result;
 }

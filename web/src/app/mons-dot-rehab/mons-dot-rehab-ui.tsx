@@ -7,7 +7,7 @@ export function MonsDotRehabCreate() {
   return (
     <button
       className="btn btn-xs lg:btn-md btn-primary"
-      onClick={() => createGame.mutateAsync()}
+      onClick={() => createGame.mutateAsync("hello")}
       disabled={createGame.isPending}
     >
       run{createGame.isPending && '...'}

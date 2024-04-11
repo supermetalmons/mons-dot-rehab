@@ -7,7 +7,7 @@ import { useMonsDotRehabProgram } from '../mons-dot-rehab/mons-dot-rehab-data-ac
 import { Keypair } from '@solana/web3.js';
 
 export default function DashboardFeature() {
-  const { createGame } = useMonsDotRehabProgram();
+  const { createGame, joinGame, resolveGame } = useMonsDotRehabProgram();
   const location = useLocation();
   const queryString = location.search.substring(1);
   const queryPairs = queryString.split("&").reduce<Record<string, string>>((acc, pair) => {
@@ -155,7 +155,7 @@ export default function DashboardFeature() {
       } else {
         setIsButtonDisabled(true);
         setIsLoading(true);
-        createGame.mutateAsync().then(result => {
+        createGame.mutateAsync(queryPairs["id"]).then(result => {
           setIsWaitingForInviteToBeShared(true);
           setIsButtonDisabled(false);
           setIsLoading(false);
@@ -179,7 +179,7 @@ export default function DashboardFeature() {
       } else if (!someoneJustJoined) {
         setIsButtonDisabled(true);
         setIsLoading(true);
-        createGame.mutateAsync().then(result => {
+        joinGame.mutateAsync(queryPairs["id"]).then(result => {
           setSomeoneJustJoined(true);
           setIsButtonDisabled(false);
           setIsLoading(false);
@@ -195,7 +195,7 @@ export default function DashboardFeature() {
       } else if (queryPairs["result"] === "draw") {
         setIsButtonDisabled(true);
         setIsLoading(true);
-        createGame.mutateAsync().then(result => {
+        resolveGame.mutateAsync(queryPairs["id"]).then(result => {
           setIsButtonDisabled(false);
           setIsLoading(false);
           setDidSendFinalTx(true);
@@ -211,7 +211,7 @@ export default function DashboardFeature() {
       } else if (queryPairs["result"] === "win") {
         setIsButtonDisabled(true);
         setIsLoading(true);
-        createGame.mutateAsync().then(result => {
+        resolveGame.mutateAsync(queryPairs["id"]).then(result => {
           setIsButtonDisabled(false);
           setIsLoading(false);
           setDidSendFinalTx(true);
