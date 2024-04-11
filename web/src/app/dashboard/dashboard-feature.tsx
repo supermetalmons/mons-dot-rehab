@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
 import { useMonsDotRehabProgram } from '../mons-dot-rehab/mons-dot-rehab-data-access';
-import { Keypair } from '@solana/web3.js';
 
 export default function DashboardFeature() {
   const { createGame, joinGame, resolveGame } = useMonsDotRehabProgram();
