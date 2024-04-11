@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_instruction;
 use anchor_lang::solana_program::program::invoke;
 
-declare_id!("3pNX9MinmcZMQXHvQj46h789ZMD7Skv3sVz9YnNZfkEy");
+declare_id!("23pPB7HdhdLukP8HxKSDoaSgrf6ESunhQMTCYm9DkJNp");
 
 #[program]
 pub mod mons_dot_rehab {
