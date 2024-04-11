@@ -37,12 +37,23 @@ pub mod mons_dot_rehab {
         let game = &mut ctx.accounts.game;
         require!(game.game_id == game_id, ErrorCode::GameNotFound);
         require!(game.guest_id == Pubkey::default(), ErrorCode::GameAlreadyJoined);
-
+    
         game.guest_id = ctx.accounts.guest.key();
-
-        **ctx.accounts.game.to_account_info().try_borrow_mut_lamports()? += GAME_COST;
-        **ctx.accounts.guest.to_account_info().try_borrow_mut_lamports()? -= GAME_COST;
-
+    
+        let transfer_instruction = system_instruction::transfer(
+            ctx.accounts.guest.to_account_info().key,
+            ctx.accounts.game.to_account_info().key,
+            GAME_COST,
+        );
+        invoke(
+            &transfer_instruction,
+            &[
+                ctx.accounts.guest.to_account_info(),
+                ctx.accounts.game.to_account_info(),
+                ctx.accounts.system_program.to_account_info(),
+            ],
+        )?;
+    
         Ok(())
     }
 
@@ -82,14 +93,15 @@ pub struct Game {
 
 #[derive(Accounts)]
 pub struct JoinGame<'info> {
-    #[account(mut, seeds = [b"game", &game.game_id.to_le_bytes()], bump = game.bump)]
+    #[account(mut, seeds = [b"game", &game.game_id.to_le_bytes()[..]], bump)]
     pub game: Account<'info, Game>,
     pub guest: Signer<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
 pub struct ResolveGame<'info> {
-    #[account(mut, seeds = [b"game", &game.game_id.to_le_bytes()], bump = game.bump, close = caller)]
+    #[account(mut, seeds = [b"game", &game.game_id.to_le_bytes()[..]], bump, close = caller)]
     pub game: Account<'info, Game>,
     #[account(mut)]
     pub caller: Signer<'info>,

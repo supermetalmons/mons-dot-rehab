@@ -2,15 +2,15 @@ import { Keypair } from '@solana/web3.js';
 import { useMonsDotRehabProgram } from './mons-dot-rehab-data-access';
 
 export function MonsDotRehabCreate() {
-  const { createGame } = useMonsDotRehabProgram();
+  const { joinGame } = useMonsDotRehabProgram();
 
   return (
     <button
       className="btn btn-xs lg:btn-md btn-primary"
-      onClick={() => createGame.mutateAsync()}
-      disabled={createGame.isPending}
+      onClick={() => joinGame.mutateAsync()}
+      disabled={joinGame.isPending}
     >
-      run{createGame.isPending && '...'}
+      run{joinGame.isPending && '...'}
     </button>
   );
 }

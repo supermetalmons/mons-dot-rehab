@@ -25,7 +25,7 @@ export function useMonsDotRehabProgram() {
   const createGame = useMutation({
     mutationKey: ['monsDotRehab', 'createGame', { cluster }],
     mutationFn: async () => {
-      const gameID = Math.floor(Math.random() * 1000000);
+      const gameID = Math.floor(Math.random() * 1000000); // TODO: use actual id
       const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
       const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
       return program.rpc.createGame(new BN(gameID), {
@@ -43,12 +43,34 @@ export function useMonsDotRehabProgram() {
     },
     onError: (error) => toast.error(`Failed to create game: ${error.message}`),
   });
-  
+
+  const joinGame = useMutation({
+    mutationKey: ['monsDotRehab', 'joinGame', { cluster }],
+    mutationFn: async () => {
+      const gameID = Math.floor(Math.random() * 1000000); // TODO: use actual id
+      const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
+      const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
+      return program.rpc.joinGame(new BN(gameID), {
+        accounts: {
+          game: gamePDA,
+          guest: provider.wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+        },
+        signers: [],
+      });
+    },
+    onSuccess: (signature) => {
+      transactionToast(signature);
+      toast.success('Game joined successfully!');
+    },
+    onError: (error) => toast.error(`Failed to join game: ${error.message}`),
+  });
   
   return {
     program,
     programId,
     createGame,
+    joinGame,
     getProgramAccount,
   };
 }

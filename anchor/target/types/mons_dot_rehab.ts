@@ -40,6 +40,11 @@ export type MonsDotRehab = {
           "name": "guest",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
@@ -163,6 +168,11 @@ export const IDL: MonsDotRehab = {
           "name": "guest",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
