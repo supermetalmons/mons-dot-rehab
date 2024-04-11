@@ -8,5 +8,5 @@ export { MonsDotRehab, MonsDotRehabIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
 export const programId = new PublicKey(
-  'FWMFXwhJvZzC6xq1rTdmTVYw9yMSY1T8LYwSMqRvyQ6A'
+  '3pNX9MinmcZMQXHvQj46h789ZMD7Skv3sVz9YnNZfkEy'
 );
