@@ -235,7 +235,7 @@ export default function DashboardFeature() {
   };
 
   function didRedirect() {
-    const newTitle = "🟩 redirected";
+    const newTitle = "🟢 redirected";
     document.title = newTitle;
     setHeroBgColor("#65ED5A");
     setRedirectCount(1);
