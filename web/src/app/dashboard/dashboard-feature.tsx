@@ -1,9 +1,10 @@
 import { AppHero } from '../ui/ui-layout';
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
 import { useMonsDotRehabProgram } from '../mons-dot-rehab/mons-dot-rehab-data-access';
+import { programId } from '@mons-dot-rehab/anchor';
 
 export default function DashboardFeature() {
   const { createGame, joinGame, resolveGame } = useMonsDotRehabProgram();
@@ -18,6 +19,7 @@ export default function DashboardFeature() {
   }, {});
 
   const { publicKey } = useWallet();
+  const { connection } = useConnection();
 
   const [pageTitle, setPageTitle] = useState("mons");
   const [subtitle, setSubtitle] = useState("🥱");
@@ -135,9 +137,10 @@ export default function DashboardFeature() {
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
       if (wentToPlay) {
-        didRedirect();
-        // TODO: pass correct caller
-        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=hello`;
+        connection.getLatestBlockhash().then(result => {
+          didRedirect();
+          window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=${publicKey}&recentBlockhash=${result.blockhash}&pid=${programId}`;
+        });
       } else if (someoneJustJoined) {
         window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
         setWentToPlay(true);
@@ -167,9 +170,10 @@ export default function DashboardFeature() {
       return;
     } else if (queryPairs["type"] === "acceptSecretInvite") {
       if (wentToPlay) {
-        didRedirect();
-        // TODO: pass correct caller
-        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=hello`;
+        connection.getLatestBlockhash().then(result => {
+          didRedirect();
+          window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=${publicKey}&recentBlockhash=${result.blockhash}&pid=${programId}`;
+        });
       } else if (someoneJustJoined) {
         window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
         setWentToPlay(true);
@@ -205,9 +209,10 @@ export default function DashboardFeature() {
           setIsLoading(false);
         });
       } else if (queryPairs["result"] === "none" || !queryPairs["result"]) {
-        didRedirect();
-        // TODO: pass correct caller
-        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=hello`;
+        connection.getLatestBlockhash().then(result => {
+          didRedirect();
+          window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=${publicKey}&recentBlockhash=${result.blockhash}&pid=${programId}`;
+        });
       } else if (queryPairs["result"] === "gg") {
         window.location.href = "https://mons.rehab";
       } else if (queryPairs["result"] === "win") {
