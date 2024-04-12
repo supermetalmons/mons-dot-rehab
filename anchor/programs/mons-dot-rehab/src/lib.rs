@@ -6,7 +6,9 @@ declare_id!("3kE4wupk4Y1JcoRVA5o9dD4tCn95D6VLevHvot4pj81B");
 
 #[program]
 pub mod mons_dot_rehab {
+
     use super::*;
+    use std::str::FromStr;
 
     const GAME_COST: u64 = 42_000_000;
 
@@ -60,10 +62,7 @@ pub mod mons_dot_rehab {
     pub fn end_game(ctx: Context<EndGame>) -> Result<()> {
         let game = &mut ctx.accounts.game;
         let caller = ctx.accounts.caller.key();
-        let verifier_pubkey = Pubkey::new_from_array([
-            0xa2, 0x21, 0x9d, 0x9b, 0x91, 0xaf, 0x7c, 0x7c, 0xd4, 0x3e, 0x58, 0x42, 0xae, 0xef, 0xb2, 0xbf,
-            0x3b, 0x3e, 0xa6, 0xa9, 0x00, 0xf3, 0x38, 0x80, 0x9e, 0x2e, 0xd9, 0x7c, 0x8d, 0xfb, 0x55, 0x9d
-        ]);
+        let verifier_pubkey = Pubkey::from_str("7YAH3GzfkZiEuESsYPccNf8u4kExNXQjx9yzUmeyM8Fv").unwrap();
         require!(caller == game.host_id || caller == game.guest_id, ErrorCode::Unauthorized);
         require!(ctx.accounts.verifier.key() == verifier_pubkey, ErrorCode::Unauthorized);
         let game_lamports = ctx.accounts.game.to_account_info().lamports();
