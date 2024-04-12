@@ -128,5 +128,8 @@
       "name": "AmountOverflow",
       "msg": "Amount overflow."
     }
-  ]
+  ],
+  "metadata": {
+    "address": "EQwamwRCCAKGTM3sLf4GLTyFjGfmeiCwmb4GFA4rP65B"
+  }
 }
