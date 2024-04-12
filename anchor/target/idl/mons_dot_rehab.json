@@ -55,22 +55,6 @@
       ]
     },
     {
-      "name": "resolveGame",
-      "accounts": [
-        {
-          "name": "game",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "caller",
-          "isMut": true,
-          "isSigner": true
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "endGame",
       "accounts": [
         {

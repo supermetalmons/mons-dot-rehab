@@ -57,18 +57,6 @@ pub mod mons_dot_rehab {
         Ok(())
     }
 
-    // TODO: legacy to be removed
-    pub fn resolve_game(ctx: Context<ResolveGame>) -> Result<()> {
-        let game = &mut ctx.accounts.game;
-        let caller = ctx.accounts.caller.key();
-        require!(caller == game.host_id || caller == game.guest_id, ErrorCode::Unauthorized);
-        let game_lamports = ctx.accounts.game.to_account_info().lamports();
-        require!(game_lamports >= 2 * GAME_COST, ErrorCode::GameAlreadyResolvedOrInsufficientFunds);
-        **ctx.accounts.caller.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.caller.to_account_info().lamports().checked_add(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
-        **ctx.accounts.game.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.game.to_account_info().lamports().checked_sub(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
-        Ok(())
-    }
-
     pub fn end_game(ctx: Context<EndGame>) -> Result<()> {
         let game = &mut ctx.accounts.game;
         let caller = ctx.accounts.caller.key();
@@ -111,14 +99,6 @@ pub struct JoinGame<'info> {
     pub game: Account<'info, Game>,
     pub guest: Signer<'info>,
     pub system_program: Program<'info, System>,
-}
-
-#[derive(Accounts)]
-pub struct ResolveGame<'info> {
-    #[account(mut, seeds = [b"game", &game.game_id.to_le_bytes()[..]], bump, close = caller)]
-    pub game: Account<'info, Game>,
-    #[account(mut)]
-    pub caller: Signer<'info>,
 }
 
 #[derive(Accounts)]

@@ -55,22 +55,6 @@ export type MonsDotRehab = {
       ]
     },
     {
-      "name": "resolveGame",
-      "accounts": [
-        {
-          "name": "game",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "caller",
-          "isMut": true,
-          "isSigner": true
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "endGame",
       "accounts": [
         {
@@ -202,22 +186,6 @@ export const IDL: MonsDotRehab = {
           "type": "u64"
         }
       ]
-    },
-    {
-      "name": "resolveGame",
-      "accounts": [
-        {
-          "name": "game",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "caller",
-          "isMut": true,
-          "isSigner": true
-        }
-      ],
-      "args": []
     },
     {
       "name": "endGame",

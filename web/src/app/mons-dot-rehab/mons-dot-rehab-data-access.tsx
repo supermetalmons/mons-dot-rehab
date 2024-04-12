@@ -1,7 +1,7 @@
 import { programId, MonsDotRehabIDL } from '@mons-dot-rehab/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { SystemProgram, PublicKey } from '@solana/web3.js';
+import { Transaction, SystemProgram, PublicKey, sendAndConfirmRawTransaction } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useCluster } from '../cluster/cluster-data-access';
@@ -66,19 +66,16 @@ export function useMonsDotRehabProgram() {
     onError: (error) => toast.error(`Failed to join game: ${error.message}`),
   });
 
-  const resolveGame = useMutation({
-    mutationKey: ['monsDotRehab', 'resolveGame', { cluster }],
-    mutationFn: async (gameIdString: string) => {
-      const gameID = convertBase62StringToBN(gameIdString);
-      const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
-      const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
-      return program.rpc.resolveGame({
-        accounts: {
-          game: gamePDA,
-          caller: provider.wallet.publicKey
-        },
-        signers: [],
+  const endGame = useMutation({
+    mutationKey: ['monsDotRehab', 'endGame', { cluster }],
+    mutationFn: async (serializedTransactionBase64: string) => {
+      const serializedTransactionBuffer = Buffer.from(serializedTransactionBase64, 'base64');
+      const transaction = Transaction.from(serializedTransactionBuffer);
+      await provider.wallet.signTransaction(transaction);
+      const serializedTransaction = transaction.serialize({
+        requireAllSignatures: true
       });
+      return sendAndConfirmRawTransaction(connection, serializedTransaction);
     },
     onSuccess: (signature) => {
       transactionToast(signature);
@@ -93,7 +90,7 @@ export function useMonsDotRehabProgram() {
     createGame,
     joinGame,
     getProgramAccount,
-    resolveGame,
+    endGame,
   };
 }
 

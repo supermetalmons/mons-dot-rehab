@@ -7,7 +7,7 @@ import { useMonsDotRehabProgram } from '../mons-dot-rehab/mons-dot-rehab-data-ac
 import { programId } from '@mons-dot-rehab/anchor';
 
 export default function DashboardFeature() {
-  const { createGame, joinGame, resolveGame } = useMonsDotRehabProgram();
+  const { createGame, joinGame, endGame } = useMonsDotRehabProgram();
   const location = useLocation();
   const queryString = location.search.substring(1);
   const queryPairs = queryString.split("&").reduce<Record<string, string>>((acc, pair) => {
@@ -200,7 +200,7 @@ export default function DashboardFeature() {
       } else if (queryPairs["result"] === "draw") {
         setIsButtonDisabled(true);
         setIsLoading(true);
-        resolveGame.mutateAsync(queryPairs["id"]).then(result => {
+        endGame.mutateAsync(queryPairs["signed"]).then(result => {
           setIsButtonDisabled(false);
           setIsLoading(false);
           setDidSendFinalTx(true);
@@ -218,7 +218,7 @@ export default function DashboardFeature() {
       } else if (queryPairs["result"] === "win") {
         setIsButtonDisabled(true);
         setIsLoading(true);
-        resolveGame.mutateAsync(queryPairs["id"]).then(result => {
+        endGame.mutateAsync(queryPairs["signed"]).then(result => {
           setIsButtonDisabled(false);
           setIsLoading(false);
           setDidSendFinalTx(true);
