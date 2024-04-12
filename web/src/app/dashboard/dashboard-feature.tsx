@@ -136,7 +136,8 @@ export default function DashboardFeature() {
     } else if (queryPairs["type"] === "createSecretInvite") {
       if (wentToPlay) {
         didRedirect();
-        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
+        // TODO: pass correct caller
+        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=hello`;
       } else if (someoneJustJoined) {
         window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
         setWentToPlay(true);
@@ -167,7 +168,8 @@ export default function DashboardFeature() {
     } else if (queryPairs["type"] === "acceptSecretInvite") {
       if (wentToPlay) {
         didRedirect();
-        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
+        // TODO: pass correct caller
+        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=hello`;
       } else if (someoneJustJoined) {
         window.location.href = `supermons://?play=${encodeURIComponent(queryPairs["id"])}`;
         setWentToPlay(true);
@@ -204,7 +206,8 @@ export default function DashboardFeature() {
         });
       } else if (queryPairs["result"] === "none" || !queryPairs["result"]) {
         didRedirect();
-        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519`;
+        // TODO: pass correct caller
+        window.location.href = `supermons://app-request?type=getSecretGameResult&id=${encodeURIComponent(queryPairs["id"])}&signature=ed25519&caller=hello`;
       } else if (queryPairs["result"] === "gg") {
         window.location.href = "https://mons.rehab";
       } else if (queryPairs["result"] === "win") {
