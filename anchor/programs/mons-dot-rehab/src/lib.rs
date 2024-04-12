@@ -65,6 +65,7 @@ pub mod mons_dot_rehab {
         require!(game_lamports >= 2 * GAME_COST, ErrorCode::GameAlreadyResolvedOrInsufficientFunds);
         **ctx.accounts.caller.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.caller.to_account_info().lamports().checked_add(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
         **ctx.accounts.game.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.game.to_account_info().lamports().checked_sub(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
+        // TODO: require extra signature for winner verification
         Ok(())
     }
     
