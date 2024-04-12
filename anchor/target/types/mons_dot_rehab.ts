@@ -69,6 +69,27 @@ export type MonsDotRehab = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "endGame",
+      "accounts": [
+        {
+          "name": "game",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "caller",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "verifier",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -193,6 +214,27 @@ export const IDL: MonsDotRehab = {
         {
           "name": "caller",
           "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "endGame",
+      "accounts": [
+        {
+          "name": "game",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "caller",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "verifier",
+          "isMut": false,
           "isSigner": true
         }
       ],

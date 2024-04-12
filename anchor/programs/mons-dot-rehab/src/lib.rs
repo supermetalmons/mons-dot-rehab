@@ -57,6 +57,7 @@ pub mod mons_dot_rehab {
         Ok(())
     }
 
+    // TODO: legacy to be removed
     pub fn resolve_game(ctx: Context<ResolveGame>) -> Result<()> {
         let game = &mut ctx.accounts.game;
         let caller = ctx.accounts.caller.key();
@@ -65,7 +66,22 @@ pub mod mons_dot_rehab {
         require!(game_lamports >= 2 * GAME_COST, ErrorCode::GameAlreadyResolvedOrInsufficientFunds);
         **ctx.accounts.caller.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.caller.to_account_info().lamports().checked_add(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
         **ctx.accounts.game.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.game.to_account_info().lamports().checked_sub(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
-        // TODO: require extra signature for winner verification
+        Ok(())
+    }
+
+    pub fn end_game(ctx: Context<EndGame>) -> Result<()> {
+        let game = &mut ctx.accounts.game;
+        let caller = ctx.accounts.caller.key();
+        let verifier_pubkey = Pubkey::new_from_array([
+            0xa2, 0x21, 0x9d, 0x9b, 0x91, 0xaf, 0x7c, 0x7c, 0xd4, 0x3e, 0x58, 0x42, 0xae, 0xef, 0xb2, 0xbf,
+            0x3b, 0x3e, 0xa6, 0xa9, 0x00, 0xf3, 0x38, 0x80, 0x9e, 0x2e, 0xd9, 0x7c, 0x8d, 0xfb, 0x55, 0x9d
+        ]);
+        require!(caller == game.host_id || caller == game.guest_id, ErrorCode::Unauthorized);
+        require!(ctx.accounts.verifier.key() == verifier_pubkey, ErrorCode::Unauthorized);
+        let game_lamports = ctx.accounts.game.to_account_info().lamports();
+        require!(game_lamports >= 2 * GAME_COST, ErrorCode::GameAlreadyResolvedOrInsufficientFunds);
+        **ctx.accounts.caller.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.caller.to_account_info().lamports().checked_add(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
+        **ctx.accounts.game.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.game.to_account_info().lamports().checked_sub(2 * GAME_COST).ok_or(ErrorCode::AmountOverflow)?;
         Ok(())
     }
     
@@ -103,6 +119,15 @@ pub struct ResolveGame<'info> {
     pub game: Account<'info, Game>,
     #[account(mut)]
     pub caller: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct EndGame<'info> {
+    #[account(mut, seeds = [b"game", &game.game_id.to_le_bytes()[..]], bump, close = caller)]
+    pub game: Account<'info, Game>,
+    #[account(mut)]
+    pub caller: Signer<'info>,
+    pub verifier: Signer<'info>,
 }
 
 #[error_code]
