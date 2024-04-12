@@ -72,10 +72,8 @@ export function useMonsDotRehabProgram() {
     mutationFn: async (serializedTransactionBase64: string) => {
       const serializedTransactionBuffer = Buffer.from(serializedTransactionBase64, 'base64');
       const transaction = Transaction.from(serializedTransactionBuffer);
-      await provider.wallet.signTransaction(transaction);
-      const serializedTransaction = transaction.serialize({
-        requireAllSignatures: true
-      });
+      const signedTransaction = await provider.wallet.signTransaction(transaction);
+      const serializedTransaction = signedTransaction.serialize({ requireAllSignatures: true });
       return sendAndConfirmRawTransaction(connection, serializedTransaction);
     },
     onSuccess: (signature) => {
