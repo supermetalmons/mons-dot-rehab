@@ -68,6 +68,7 @@ export function useMonsDotRehabProgram() {
 
   const endGame = useMutation({
     mutationKey: ['monsDotRehab', 'endGame', { cluster }],
+    
     mutationFn: async (serializedTransactionBase64: string) => {
       const serializedTransactionBuffer = Buffer.from(serializedTransactionBase64, 'base64');
       const transaction = Transaction.from(serializedTransactionBuffer);
