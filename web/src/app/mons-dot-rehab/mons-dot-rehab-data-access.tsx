@@ -26,8 +26,7 @@ export function useMonsDotRehabProgram() {
     mutationKey: ['monsDotRehab', 'createGame', { cluster }],
     mutationFn: async (gameIdString: string) => {
       const gameID = convertBase62StringToBN(gameIdString);
-      const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
-      const [gamePDA, bump] = await PublicKey.findProgramAddress(seeds, program.programId);
+      const gamePDA = await findGamePDA(gameIdString);
       return program.rpc.createGame(new BN(gameID), {
         accounts: {
           game: gamePDA,
@@ -91,6 +90,13 @@ export function useMonsDotRehabProgram() {
     getProgramAccount,
     endGame,
   };
+}
+
+export async function findGamePDA(str: string): Promise<PublicKey> {
+  const gameID = convertBase62StringToBN(str);
+  const seeds = [Buffer.from('game'), Buffer.from(new BN(gameID).toArrayLike(Buffer, 'le', 8))];
+  const [gamePDA, _] = await PublicKey.findProgramAddress(seeds, programId);
+  return gamePDA
 }
 
 function convertBase62StringToBN(str: string) {

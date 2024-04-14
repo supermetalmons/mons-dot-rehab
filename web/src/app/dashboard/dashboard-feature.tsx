@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
-import { useMonsDotRehabProgram } from '../mons-dot-rehab/mons-dot-rehab-data-access';
+import { useMonsDotRehabProgram, findGamePDA } from '../mons-dot-rehab/mons-dot-rehab-data-access';
 import { programId } from '@mons-dot-rehab/anchor';
 
 export default function DashboardFeature() {
@@ -150,10 +150,7 @@ export default function DashboardFeature() {
         if (!isWaitingForSomeoneToJoin) {
           setIsWaitingForSomeoneToJoin(true);
           setIsLoading(true);
-          setTimeout(() => {
-            // TODO: actually monitor invite status
-            setSomeoneJustJoined(true);
-          }, 7000);
+          monitorTillGameIsJoined();
         }
       } else {
         setIsButtonDisabled(true);
@@ -233,6 +230,15 @@ export default function DashboardFeature() {
       window.location.href = `supermons://?type=createSecretInvite`;
     }
   };
+
+  async function monitorTillGameIsJoined() {
+    const gamePDA = await findGamePDA(queryPairs["id"]);
+    let subscriptionId: number;
+    subscriptionId = connection.onAccountChange(gamePDA, (accountInfo) => {
+      setSomeoneJustJoined(true);
+      connection.removeAccountChangeListener(subscriptionId);
+    }, "confirmed");
+  }
 
   function didRedirect() {
     const newTitle = "🟢 redirected";
