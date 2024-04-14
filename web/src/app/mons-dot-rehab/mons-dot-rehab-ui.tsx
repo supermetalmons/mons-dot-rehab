@@ -1,19 +1,4 @@
-import { Keypair } from '@solana/web3.js';
 import { useMonsDotRehabProgram } from './mons-dot-rehab-data-access';
-
-export function MonsDotRehabCreate() {
-  const { createGame } = useMonsDotRehabProgram();
-
-  return (
-    <button
-      className="btn btn-xs lg:btn-md btn-primary"
-      onClick={() => createGame.mutateAsync("hello")}
-      disabled={createGame.isPending}
-    >
-      run{createGame.isPending && '...'}
-    </button>
-  );
-}
 
 export function MonsDotRehabProgram() {
   const { getProgramAccount } = useMonsDotRehabProgram();

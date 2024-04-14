@@ -3,7 +3,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { useMonsDotRehabProgram } from './mons-dot-rehab-data-access';
-import { MonsDotRehabCreate, MonsDotRehabProgram } from './mons-dot-rehab-ui';
+import { MonsDotRehabProgram } from './mons-dot-rehab-ui';
 
 export default function MonsDotRehabFeature() {
   const { publicKey } = useWallet();
@@ -21,7 +21,6 @@ export default function MonsDotRehabFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        <MonsDotRehabCreate />
       </AppHero>
       <MonsDotRehabProgram />
     </div>
