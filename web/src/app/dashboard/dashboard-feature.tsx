@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
-import { useMonsDotRehabProgram, findGamePDA } from '../mons-dot-rehab/mons-dot-rehab-data-access';
+import { useMonsDotRehabProgram, findGamePDA } from './program-data-access';
 import { programId } from '@mons-dot-rehab/anchor';
 
 export default function DashboardFeature() {

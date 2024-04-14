@@ -9,11 +9,7 @@ const AccountDetailFeature = lazy(
 const ClusterFeature = lazy(() => import('./cluster/cluster-feature'));
 const DashboardFeature = lazy(() => import('./dashboard/dashboard-feature'));
 
-const MonsDotRehabFeature = lazy(
-  () => import('./mons-dot-rehab/mons-dot-rehab-feature')
-);
 const links: { label: string; path: string }[] = [
-  { label: 'program', path: '/mons-dot-rehab' },
   { label: 'account', path: '/account' },
 ];
 
@@ -21,7 +17,6 @@ const routes: (query: string) => RouteObject[] = (query) => [
   { path: '/account/', element: <AccountListFeature /> },
   { path: '/account/:address', element: <AccountDetailFeature /> },
   { path: '/clusters', element: <ClusterFeature /> },
-  { path: 'mons-dot-rehab/*', element: <MonsDotRehabFeature /> },
   { path: '/app-response', element: <Navigate to={`/${query}`} replace={true} /> },
   { path: '/open-in-browser', element: <Navigate to={`/${query}`} replace={true} /> },
 ];
