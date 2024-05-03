@@ -133,7 +133,7 @@ export default function DashboardFeature() {
 
   const handleRedirect = () => {
     if (redirectCount != 0) {
-      window.location.href = "https://mons.link";
+      window.location.href = "https://apps.apple.com/app/id6446702971";
       return;
     } else if (queryPairs["type"] === "createSecretInvite") {
       if (wentToPlay) {
